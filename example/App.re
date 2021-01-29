@@ -20,7 +20,7 @@ module Decode = {
 let make = () => {
   let (state: state, dispatch: action => unit) =
     React.useReducer(
-      (state: state, action: action) =>
+      (_, action: action) =>
         switch (action) {
         | WEBSOCKET(id) => LOADED(id)
         | FAILEDTOFETCH => ERROR

@@ -16,7 +16,7 @@ var Decode = {
 };
 
 function App(Props) {
-  var match = React.useReducer((function (state, action) {
+  var match = React.useReducer((function (param, action) {
           if (typeof action === "number") {
             if (action !== 0) {
               return /* ERROR */1;
