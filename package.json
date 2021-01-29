@@ -6,7 +6,9 @@
   "scripts": {
     "start": "brunch watch --server",
     "build": "brunch build --production",
-    "build:bsb": "bsb -make-world"
+    "build:bsb": "bsb -make-world",
+    "watch": "bsb -make-world -w",
+    "clean": "bsb -clean-world"
   },
   "repository": {
     "type": "git",
@@ -30,9 +32,13 @@
     "bs-platform": "*"
   },
   "devDependencies": {
+    "@glennsl/bs-json": "^5.0.2",
     "auto-reload-brunch": "^2",
     "brunch": "^2",
+    "bs-fetch": "^0.6.2",
+    "bs-platform": "8.4.2",
     "clean-css-brunch": "^2",
+    "reason-react": "^0.9.1",
     "uglify-js-brunch": "^2"
   }
 }

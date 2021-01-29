@@ -1,70 +1,68 @@
 type state =
- | LOADING
- | ERROR
- | LOADED(string)
+  | LOADING
+  | ERROR
+  | LOADED(string);
 
 type action =
- | FETCHCHANNEL
- | WEBSOCKET(string)
- | FAILEDTOFETCH
+  | FETCHCHANNEL
+  | WEBSOCKET(string)
+  | FAILEDTOFETCH;
 
-type webSocket = {
-  id: string
-}
+type webSocket = {id: string};
 
 module Decode = {
-   let ws = (webSocket) => Json.Decode.{
-     id: webSocket |> field("id", string)
-     }
-    };
+  let ws = webSocket => Json.Decode.{id: webSocket |> field("id", string)};
+};
 
-    let reducer = (action, _state) =>
-      switch(action) {
-      | FETCHCHANNEL => ReasonReact.UpdateWithSideEffects(
+// let initialState = LOADING;
+
+[@react.component]
+let make = () => {
+  let (state: state, dispatch: action => unit) =
+    React.useReducer(
+      (state: state, action: action) =>
+        switch (action) {
+        | WEBSOCKET(id) => LOADED(id)
+        | FAILEDTOFETCH => ERROR
+        | FETCHCHANNEL => LOADING
+        },
       LOADING,
-      (
-      self =>
-      Js.Promise.(
+    );
 
+  let fetchChannel = {
+    dispatch(FETCHCHANNEL);
+    Js.Promise.(
       Fetch.fetchWithInit(
-              "/",
-               Fetch.RequestInit.make(
-                ~method_=Post,
-                ~headers=Fetch.HeadersInit.make({"Content-Type": "application/json"}),
-                ()
-              )
-            )
+        "/",
+        Fetch.RequestInit.make(
+          ~method_=Post,
+          ~headers=
+            Fetch.HeadersInit.make({"Content-Type": "application/json"}),
+          (),
+        ),
+      )
       |> then_(Fetch.Response.json)
-      |> then_(json => json
-        |> Decode.ws
-        |> (webSocket => self.send(WEBSOCKET(webSocket.id)))
-        |> resolve)
-      |> catch(_err => Js.Promise.resolve(self.send(FAILEDTOFETCH)))
+      |> then_(json =>
+           json
+           |> Decode.ws
+           |> (webSocket => dispatch(WEBSOCKET(webSocket.id)))
+           |> resolve
+         )
+      |> catch(_err => Js.Promise.resolve(dispatch(FAILEDTOFETCH)))
       |> ignore
-      )
-      ),
-      )
-      | WEBSOCKET(id) => ReasonReact.Update(LOADED(id))
-      | FAILEDTOFETCH => ReasonReact.Update(ERROR)
+    );
+  };
 
-     };
-
-let component = ReasonReact.reducerComponent("App");
-
-let make = _children => {
-  ...component,
-  initialState: () => LOADING,
-  reducer,
-  didMount: self => {
-  self.send(FETCHCHANNEL),
-  render: (self) =>
-  switch(self.state){
-  | ERROR => <div> ( ReasonReact.string("An Error Occured !!") ) </div>
-  | LOADING => <div className=Styles.app>
-               <div> ( ReasonReact.string("Loading... ") ) </div>
-               </div>
-  | LOADED(id) => <div className=Styles.app>
-                         <div> ( ReasonReact.string("Loaded") ) </div>
-                      </div>
-  }
+  React.useEffect1(
+    () => {
+      fetchChannel |> ignore;
+      None;
+    },
+    [||],
+  );
+  switch (state) {
+  | ERROR => <div> {React.string("An Error Occured !!")} </div>
+  | LOADING => <div> <div> {React.string("Loading... ")} </div> </div>
+  | LOADED(id) => <div> <div> {React.string("Loaded" ++ id)} </div> </div>
+  };
 };
