@@ -1,4 +1,4 @@
-// open Phx_abstract
+open Phx_abstract
 type t = {
   @bs.meth
   "normalizeEndpoint": /* constructor(endPoint: string); */
@@ -10,13 +10,13 @@ type t = {
   string,
   @bs.get
   "closeAndRetry": /* closeAndRetry(): void; */
-  unit,
+  void,
   @bs.get
   "ontimeout": /* ontimeout(): void; */
-  unit,
+  void,
   @bs.get
   "poll": /* poll(): void; */
-  unit,
+  void,
   /* send(body: any): void; */
   /* defined as function */
   /* close(code?: any, reason?: any): void; */
@@ -27,7 +27,7 @@ type t = {
 @bs.new @bs.module("phoenix") external init: string => t = "LongPoll"
 
 /* send(body: any): void; */
-@bs.send external send: (t, Js.t<'body>) => unit = "send"
+@bs.send external send: (t, Js.t<'body>) => void = "send"
 /* close(code?: any, reason?: any): void; */
 @bs.send
-external close: (t, ~code: Js.t<'code>=?, ~reason: Js.t<'reason>=?) => unit = "close"
+external close: (t, ~code: Js.t<'code>=?, ~reason: Js.t<'reason>=?) => void = "close"

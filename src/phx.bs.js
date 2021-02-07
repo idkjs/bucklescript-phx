@@ -23,13 +23,9 @@ function putReceive($$event, handleReiceive, push) {
   return push;
 }
 
-var Abstract;
-
 var Channel;
 
 var Socket;
-
-var Push;
 
 var Presence;
 
@@ -54,10 +50,8 @@ var putOnSyncState = Phx_presence$BucklescriptPhx.onState;
 var putOnsyncDiff = Phx_presence$BucklescriptPhx.onDiff;
 
 export {
-  Abstract ,
   Channel ,
   Socket ,
-  Push ,
   Presence ,
   LongPoll ,
   initSocket ,
